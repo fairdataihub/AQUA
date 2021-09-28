@@ -59,7 +59,7 @@ Supports compound aware automatic spelling correction of multi-word input string
 Find suggested spellings for a multi-word input string (supports word splitting/merging).
 
 ## Auto-completion path (yellow box):
-It is an added feature to auto-complete the queries while the user is typing. The idea of auto-completion is to prevent typos occuring and to give a better user experience in the SPARC Portal. We have created an n-gram model for auto-completion and utilised a Python library *fast-autocomplete* ([fast-autocomplete](https://pypi.org/project/fast-autocomplete/)).
+It is an added feature to auto-complete the queries while the user is typing. The idea of auto-completion is to prevent typos occurring and to give a better user experience in the SPARC Portal. We have created an n-gram model for auto-completion and utilised a Python library *fast-autocomplete* ([fast-autocomplete](https://pypi.org/project/fast-autocomplete/)).
 
 ### Auto-completion model
 The format of the n-gram model needs to be in the following format:
@@ -84,7 +84,7 @@ The format of the n-gram model needs to be in the following format:
 
 The Elasticsearch's Autocomplete suggestor is not fast enough and does not do everything that we need. Consequently, we have utilised fast-autocomplete library which provides us with a much faster process (reducing the average latency from 900 ms to 30 ms).
 
-Elasticsearch's Autocomplete suggestor does not handle any sort of combination of the words you have put in. For example Fast Autocomplete can handle ```brainstem neuron in rat``` when the words ```brainstem```, ```neuron```, ```in```, ```rat``` are seperately fed into it. While Elasticsearch's autocomplete needs that whole sentence to be fed to it to show it in Autocomplete results.
+Elasticsearch's Autocomplete suggestor does not handle any sort of combination of the words you have put in. For example Fast Autocomplete can handle ```brainstem neuron in rat``` when the words ```brainstem```, ```neuron```, ```in```, ```rat``` are separately fed into it. While Elasticsearch's autocomplete needs that whole sentence to be fed to it to show it in Autocomplete results.
 
 # Packages:
 
