@@ -94,16 +94,15 @@ def retrieve_search_to_df(keyword):
     rsp = json.loads(rsp.text)
     if rsp['hits']['total']==0:
         return 'Nothing matching yet'
-    else:
-        df_search=pd.DataFrame.from_dict(rsp['hits']['hits'])
-        df_search=pd.concat([df_search['_source'].apply(pd.Series)['pennsieve'].apply(pd.Series)[['identifier']],
-        df_search[['_id']],#df_search[['_id','_score']],
-        df_search['_source'].apply(pd.Series)['item'].apply(pd.Series)[['name','description']],
-        df_search['_source'].apply(pd.Series)['item'].apply(pd.Series)['published'].apply(pd.Series)['status'],
-        ], axis=1)
-        df_search['link']= 'https://sparc.science/datasets/'+df_search['identifier']
-        df_search=df_search[['_id','name','description','status','link']]
-        return df_search
+    df_search=pd.DataFrame.from_dict(rsp['hits']['hits'])
+    df_search=pd.concat([df_search['_source'].apply(pd.Series)['pennsieve'].apply(pd.Series)[['identifier']],
+    df_search[['_id']],#df_search[['_id','_score']],
+    df_search['_source'].apply(pd.Series)['item'].apply(pd.Series)[['name','description']],
+    df_search['_source'].apply(pd.Series)['item'].apply(pd.Series)['published'].apply(pd.Series)['status'],
+    ], axis=1)
+    df_search['link']= 'https://sparc.science/datasets/'+df_search['identifier']
+    df_search=df_search[['_id','name','description','status','link']]
+    return df_search
 
 ### Sending Email with the results
 def send_email_alert_withtable(emaillist, keyword):
