@@ -18,11 +18,10 @@ def loadMain():
     """
     fileName = os.path.join(os.path.dirname(__file__), 'main.html')
     try:
-        f = open(fileName, "r")
-        htmlText = f.read()
-        f.close()
+        with open(fileName, "r") as f:
+            htmlText = f.read()
     except:
-        return html("We are sorry,there was an error ..., %s is not found" % fileName)
+        return html(f"We are sorry,there was an error ..., {fileName} is not found")
     return html(htmlText)
 
 
@@ -59,7 +58,8 @@ def getSearch(request):
     """
     # initialise query run
     summary = {}
-    url = 'https://scicrunch.org/api/1/elastic/SPARC_PortalDatasets_pr/_search?api_key='+api_key
+    url = f'https://scicrunch.org/api/1/elastic/SPARC_PortalDatasets_pr/_search?api_key={api_key}'
+
     size = '200'
     includes = ["item.keywords.keyword",
                 "item.name",
@@ -131,7 +131,7 @@ def getSearch(request):
         ## extract from contributors
         firsts = __find('_source.contributors.first.name', hit)
         lasts = __find('_source.contributors.last.name', hit)
-        for name in [first+' '+last for first, last in (zip(firsts, lasts))]:
+        for name in [f'{first} {last}' for first, last in (zip(firsts, lasts))]:
             if name not in summary['filters']['authors']:
                 summary['filters']['authors'][name] = []
             summary['filters']['authors'][name] += [idx]
@@ -149,22 +149,28 @@ def getSearch(request):
         names += [str(__find('_source.item.name', hit))]
         srtNames += [str(idx)]
         # set hit
-        ht = {'url': 'https://sparc.science/datasets/'+idx,
-              'banner': __find('_source.pennsieve.banner.uri', hit),
-              '_id': hit['_id'],
-              '_score': hit['_score'],
-              'firstPublishedAt': __find('_source.pennsieve.firstPublishedAt.timestamp', hit),
-              'updatedAt': __find('_source.pennsieve.updatedAt.timestamp', hit),
-              'name': __find('_source.item.name', hit),
-              'description': __find('_source.item.description', hit),
-              'readme': __find('_source.item.readme.description', hit),
-              'samples': __find('_source.item.statistics.samples.count', hit),
-              'subjects': __find('_source.item.statistics.subjects.count', hit),
-              'anatomy': __find('_source.anatomy.organ.name', hit),
-              'organisms': __find('_source.organisms.primary.species.originalName', hit),
-              'publication': __find('_source.item.published.boolean', hit),
-              'techniques': __find('_source.item.techniques.keyword', hit),
-              }
+        ht = {
+            'url': f'https://sparc.science/datasets/{idx}',
+            'banner': __find('_source.pennsieve.banner.uri', hit),
+            '_id': hit['_id'],
+            '_score': hit['_score'],
+            'firstPublishedAt': __find(
+                '_source.pennsieve.firstPublishedAt.timestamp', hit
+            ),
+            'updatedAt': __find('_source.pennsieve.updatedAt.timestamp', hit),
+            'name': __find('_source.item.name', hit),
+            'description': __find('_source.item.description', hit),
+            'readme': __find('_source.item.readme.description', hit),
+            'samples': __find('_source.item.statistics.samples.count', hit),
+            'subjects': __find('_source.item.statistics.subjects.count', hit),
+            'anatomy': __find('_source.anatomy.organ.name', hit),
+            'organisms': __find(
+                '_source.organisms.primary.species.originalName', hit
+            ),
+            'publication': __find('_source.item.published.boolean', hit),
+            'techniques': __find('_source.item.techniques.keyword', hit),
+        }
+
         if 'highlight' in hit:
             ht['highlight'] = {}
             for type, value in hit['highlight'].items():
@@ -199,7 +205,7 @@ def __getSuggestions(query, limit):
     # get possible correction
     correction = __getCorrection(query)
     # get suggestion from SciGraph
-    url = 'https://scicrunch.org/api/1/scigraph/vocabulary/suggestions/'+query
+    url = f'https://scicrunch.org/api/1/scigraph/vocabulary/suggestions/{query}'
     params = {'api_key': api_key, 'limit': limit}
     rsp = requests.get(url, params=params)
     # return the correction and suggestions
@@ -223,7 +229,7 @@ def __getAutoComplete_sc(query, limit, verbose):
     """
     To get autocomplete as a list data type.
     """
-    url = 'https://scicrunch.org/api/1/scigraph/vocabulary/autocomplete/'+query
+    url = f'https://scicrunch.org/api/1/scigraph/vocabulary/autocomplete/{query}'
     params = {'api_key': api_key, 'limit': limit, 'searchSynonyms': 'true',
               'searchAbbreviations': 'false', 'searchAcronyms': 'false',
               'includeDeprecated': 'false'}

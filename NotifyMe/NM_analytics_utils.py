@@ -59,7 +59,7 @@ def plot_most_frequent_wait():
 
 
 def plot_most_freq_search_term(n=10):
-    title='<b> Top '+str(n)+' Most Frequent Search Terms </b>'
+    title = f'<b> Top {str(n)} Most Frequent Search Terms </b>'
     fig = px.bar(df_imp_keywords[:n], x="keywords",y='Users_Count', title=title, color= 'status', color_discrete_sequence=px.colors.qualitative.Vivid).update_xaxes(categoryorder="total descending")
     fig.update_layout( title={'y':0.9, 'x':0.5,'xanchor': 'center','yanchor': 'top'},
                      titlefont=dict(size =28, color='black', family='Old Standard TT, serif'),
